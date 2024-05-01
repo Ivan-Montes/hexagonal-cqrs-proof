@@ -3,7 +3,7 @@ package dev.ime.domain.port.outbound;
 
 import dev.ime.domain.model.Artist;
 
-public interface ArtistWriteNosqlRepositoryPort {
+public interface ArtistSynchroDatabaseRepositoryPort {
 
 	void save(Artist artist);
 	void update(Artist artist);

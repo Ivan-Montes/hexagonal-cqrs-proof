@@ -6,16 +6,16 @@ import org.springframework.stereotype.Component;
 
 import dev.ime.application.usecase.GetAllQuery;
 import dev.ime.domain.model.Artist;
-import dev.ime.domain.port.outbound.ArtistReadNosqlRepositoryPort;
+import dev.ime.domain.port.outbound.ArtistReadRepositoryPort;
 import dev.ime.domain.query.Query;
 import dev.ime.domain.query.QueryHandler;
 
 @Component
 public class GetAllQueryHandler  implements QueryHandler<List<Artist>>{
 
-	private final ArtistReadNosqlRepositoryPort artistReadRepositoryPort;	
+	private final ArtistReadRepositoryPort artistReadRepositoryPort;	
 	
-	public GetAllQueryHandler(ArtistReadNosqlRepositoryPort artistReadRepositoryPort) {
+	public GetAllQueryHandler(ArtistReadRepositoryPort artistReadRepositoryPort) {
 		super();
 		this.artistReadRepositoryPort = artistReadRepositoryPort;
 	}

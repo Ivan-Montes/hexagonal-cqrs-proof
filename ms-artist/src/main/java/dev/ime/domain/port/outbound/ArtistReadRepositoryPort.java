@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import dev.ime.domain.model.Artist;
 
-public interface ArtistReadNosqlRepositoryPort {
+public interface ArtistReadRepositoryPort {
 
 	List<Artist>findAll();
 	Optional<Artist>findById(Long id);

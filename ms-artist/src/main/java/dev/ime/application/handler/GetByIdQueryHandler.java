@@ -6,18 +6,18 @@ import org.springframework.stereotype.Component;
 
 import dev.ime.application.usecase.GetByIdQuery;
 import dev.ime.domain.model.Artist;
-import dev.ime.domain.port.outbound.ArtistReadNosqlRepositoryPort;
+import dev.ime.domain.port.outbound.ArtistReadRepositoryPort;
 import dev.ime.domain.query.Query;
 import dev.ime.domain.query.QueryHandler;
 
 @Component
 public class GetByIdQueryHandler implements QueryHandler<Optional<Artist>>{
 
-	private final ArtistReadNosqlRepositoryPort artistReadNosqlRepositoryPort;
+	private final ArtistReadRepositoryPort artistReadRepositoryPort;
 
-	public GetByIdQueryHandler(ArtistReadNosqlRepositoryPort artistReadNosqlRepositoryPort) {
+	public GetByIdQueryHandler(ArtistReadRepositoryPort artistReadRepositoryPort) {
 		super();
-		this.artistReadNosqlRepositoryPort = artistReadNosqlRepositoryPort;
+		this.artistReadRepositoryPort = artistReadRepositoryPort;
 	}
 
 	@Override
@@ -25,7 +25,7 @@ public class GetByIdQueryHandler implements QueryHandler<Optional<Artist>>{
 		
 		if ( query instanceof GetByIdQuery getByIdQuery) {
 			
-		return artistReadNosqlRepositoryPort.findById(getByIdQuery.id());
+		return artistReadRepositoryPort.findById(getByIdQuery.id());
 		
 		} else {
 			
