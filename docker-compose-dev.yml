@@ -1,0 +1,156 @@
+version: "3.8"
+
+services:
+
+  nosql-ms-artist:
+    image: mongo
+    container_name: nosql-ms-artist
+    environment:
+      MONGO_INITDB_DATABASE: ArtistNoSqlDb
+      MONGO_INITDB_ROOT_USERNAME: sa
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - ./databases/nosql-ms-artist/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - hexa-cqrs-net
+    ports:
+      - "27017:27017"  
+    restart: on-failure:3
+    healthcheck:
+      test: "echo 'db.runCommand(\"ping\").ok'"
+      interval: 5s
+      timeout: 5s
+      retries: 3
+            
+  sql-ms-artist:
+    image: postgres:latest
+    container_name: sql-ms-artist
+    environment:
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_USER: root
+      POSTGRES_DB: ArtistSqlDb
+    volumes:
+      - ./databases/sql-ms-artist/init.sql:/docker-entrypoint-initdb.d/init.sql   
+    networks:
+     - hexa-cqrs-net
+    ports:
+      - "5432:5432"
+    restart: on-failure:3
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5  
+      
+  nosql-ms-media:
+    image: mongo
+    container_name: nosql-ms-media
+    environment:
+      MONGO_INITDB_DATABASE: MediaNoSqlDb
+      MONGO_INITDB_ROOT_USERNAME: sa
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - ./databases/nosql-ms-media/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - hexa-cqrs-net
+    ports:
+      - "27018:27017"  
+    restart: on-failure:3
+    healthcheck:
+      test: "echo 'db.runCommand(\"ping\").ok'"
+      interval: 5s
+      timeout: 5s
+      retries: 3
+            
+  sql-ms-media:
+    image: postgres:latest
+    container_name: sql-ms-media
+    environment:
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_USER: root
+      POSTGRES_DB: MediaSqlDb
+    volumes:
+      - ./databases/sql-ms-media/init.sql:/docker-entrypoint-initdb.d/init.sql   
+    networks:
+     - hexa-cqrs-net
+    ports:
+      - "5433:5432"
+    restart: on-failure:3
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5 
+       
+  redis-ms-media:
+    image: redis:latest
+    container_name: redis-ms-media
+    volumes:
+      - ./databases/nosql-ms-media/init-redis.sh:/init-redis.sh
+    networks:
+      - hexa-cqrs-net
+    ports:
+      - "6379:6379"
+    command: redis-server --save 60 1 --loglevel warning --requirepass 12345    
+    command: sh /init-redis.sh
+    restart: on-failure:3
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]      
+      
+  kafka:
+    image: bitnami/kafka
+    container_name: kafka
+    environment:
+      - KAFKA_ENABLE_KRAFT=yes
+      - KAFKA_KRAFT_CLUSTER_ID=kafka-dono
+      - KAFKA_CFG_BROKER_ID=1
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,PLAINTEXTDNS://:29092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXTDNS:PLAINTEXT
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092,PLAINTEXTDNS://kafka:29092
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
+      - ALLOW_PLAINTEXT_LISTENER=yes      
+    volumes:
+      - kafka_persistent:/var/lib/kafka
+    networks:
+      - hexa-cqrs-net
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    restart: on-failure:3
+    healthcheck:
+      test: "bash -c 'printf \"\" > /dev/tcp/127.0.0.1/9092; exit $$?;'"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    environment:
+      DYNAMIC_CONFIG_ENABLED: 'true'
+      KAFKA_CLUSTERS_0_NAME: kafka-dono
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+    networks:
+      - hexa-cqrs-net
+    ports:
+      - 8080:8080
+    restart: on-failure:3
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+      
+networks:
+  hexa-cqrs-net:
+    name: hexa-cqrs-net  
+    ipam:
+      config:
+        - subnet: 172.33.0.0/16
+          gateway: 172.33.0.1
+          
+volumes:
+  kafka_persistent: {}
+  
