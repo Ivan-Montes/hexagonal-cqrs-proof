@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: ms-artist
+
+# DB SQL  Settings
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/ArtistSqlDb
+    username: root
+    password: 12345 
+           
+# How you deal with Lazy Associations and Entities. By default active but you have a warning in console to set it
+  jpa:
+    open-in-view: true
+# Show queries
+    show-sql: true
+            
+# DB NOSQL Mongo Settings    
+  data:
+    mongodb:
+      uri: mongodb://sa:password@localhost:27017/ArtistNoSqlDb?authSource=admin
+
+# Kafka settings
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        acks: all
+        retries: 10
+        retry:
+          backoff:
+            ms: 1000
+    consumer:
+      bootstrap-servers: localhost:9092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+           json:
+             trusted:
+               packages: '*'              
+        
+server:
+  port: ${ms-artist.server.port:8081}
+                

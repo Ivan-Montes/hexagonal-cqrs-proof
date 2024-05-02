@@ -1,0 +1,16 @@
+
+spring:
+  datasource:
+    url: jdbc:postgresql://sql-ms-artist:5432/ArtistSqlDb
+
+  data:
+    mongodb:
+      uri: mongodb://sa:password@nosql-ms-artist:27017/ArtistNoSqlDb?authSource=admin
+  
+  kafka:
+    producer:
+      bootstrap-servers: kafka:9092
+    consumer:
+      bootstrap-servers: kafka:9092   
+      
+    
