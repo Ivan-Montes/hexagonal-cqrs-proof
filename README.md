@@ -1,4 +1,4 @@
-# hexagonal-arch-proof
+# hexagonal-cqrs-proof
 
 :warning::construction::traffic_light:Microservices in a multimodule Maven project with Hexagonal Architecture, CQRS, and Kafka for synchronizing databases :warning::construction::traffic_light:
 
@@ -8,7 +8,7 @@
 - REST API ms-artist with [OpenApi Swagger](https://swagger.io/) and two separate DB for R/RW actions [8081]
 - REST API ms-media with [OpenApi Swagger](https://swagger.io/) and two separate DB for R/RW actions [8082]
 - REST API ms-notification with [OpenApi Swagger](https://swagger.io/) [8083]
-
+- Redis DB in every microservice for keeping ID references of other ones
 
 ## Table of contents
 
@@ -40,7 +40,7 @@
       
 The dev environment is ready for using with your IDE. The microservice attempts to communicate with Kafka using the local host. In production, it uses the archive Dockerfile to build an image of the project, so you wont need the IDE.
    
-1. You could stop the project and free resources with any of these orders
+4. You could stop the project and free resources with any of these orders
 
 ```
     **Developing mode**
@@ -58,7 +58,7 @@ First of all, please visit the REST API documentation. Replace ${port} for the s
     
 [Kafka-UI](https://docs.kafka-ui.provectus.io/) allow you to check your [Kafka](https://kafka.apache.org/) server using a practical dashboard, so visit the following url:
 
-    http://localhost:8081
+    http://localhost:8080
     
 
 ## Features
@@ -70,6 +70,8 @@ First of all, please visit the REST API documentation. Replace ${port} for the s
 #### :white_check_mark: CQRS pattern with independent databases for Read or RW actions
 
 #### :white_check_mark: DB synchronization by Publisher-Subscriber pattern
+
+#### :white_check_mark: Redis DB in every microservice for keeping ID references of other ones
 
 
 ## Maintainers
