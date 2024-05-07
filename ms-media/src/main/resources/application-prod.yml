@@ -1,0 +1,16 @@
+
+spring:
+  datasource:
+    url: jdbc:postgresql://sql-ms-media:5432/MediaSqlDb
+
+  data:
+    mongodb:
+      uri: mongodb://sa:password@nosql-ms-media:27017/MediaNoSqlDb?authSource=admin
+    redis:
+      host: redis-ms-media
+      
+  kafka:
+    producer:
+      bootstrap-servers: kafka:9092
+    consumer:
+      bootstrap-servers: kafka:9092   
