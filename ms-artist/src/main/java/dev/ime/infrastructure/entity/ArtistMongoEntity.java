@@ -7,12 +7,14 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Generated;
 import lombok.NoArgsConstructor;
 
 @Document("artists")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Generated
 public class ArtistMongoEntity {
 	
 	@Id
