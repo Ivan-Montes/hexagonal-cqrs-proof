@@ -6,7 +6,10 @@ spring:
   data:
     mongodb:
       uri: mongodb://sa:password@nosql-ms-artist:27017/ArtistNoSqlDb?authSource=admin
-  
+    redis:
+      host: redis-ms-artist
+      port: 6379
+      
   kafka:
     producer:
       bootstrap-servers: kafka:9092

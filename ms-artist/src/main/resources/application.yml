@@ -20,6 +20,14 @@ spring:
     mongodb:
       uri: mongodb://sa:password@localhost:27017/ArtistNoSqlDb?authSource=admin
 
+# DB NoSQL Redis for backup Id of Media Entity  
+    redis:
+      database: 0
+      host: localhost
+      port: 26379
+      password: 12345
+      timeout: 60000
+      
 # Kafka settings
   kafka:
     producer:
