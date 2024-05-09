@@ -7,8 +7,50 @@
 - [Kafka-UI](https://docs.kafka-ui.provectus.io/) [8080]
 - REST API ms-artist with [OpenApi Swagger](https://swagger.io/) and two separate DB for R/RW actions [8081]
 - REST API ms-media with [OpenApi Swagger](https://swagger.io/) and two separate DB for R/RW actions [8082]
-- REST API ms-notification with [OpenApi Swagger](https://swagger.io/) [8083]
-- Redis DB in every microservice for keeping ID references of other ones
+- [Redis](https://redis.io/) DB in every microservice for keeping ID references of other ones
+
+```mermaid
+graph RL
+
+subgraph ms-artist
+  direction LR
+  subgraph ms-artist-ms
+   A{{ms-artist}}
+  end
+  subgraph ms-artist-db
+  direction LR
+   A1[(NoSql Read Db)]
+   A2[(Sql Write Db)]
+   A3[(Redis Backup Db)]
+   end
+end
+
+  Kafka(((Kafka)))
+  KafkaUI(KafkaUI)
+
+subgraph ms-media
+  direction RL
+  subgraph ms-media-ms
+   B{{ms-media}}
+  end
+  subgraph ms-media-db
+  direction RL
+   B1[(NoSql Read Db)]
+   B2[(Sql Write Db)]
+   B3[(Redis Backup Db)] 
+  end
+end  
+  
+  ms-media-db <--> ms-media-ms
+  ms-artist-db <--> ms-artist-ms
+  ms-artist -->|Publish| Kafka
+  Kafka -->|Subscriber| ms-artist
+  ms-media -->|Publish| Kafka
+  Kafka -->|Subscriber| ms-media
+  KafkaUI <--> Kafka
+  B1 <-.SYNCHRO.-> B2
+  A1 <-.SYNCHRO.-> A2
+```
 
 ## Table of contents
 
@@ -63,6 +105,8 @@ First of all, please visit the REST API documentation. Replace ${port} for the s
 
 ## Features
 
+#### :white_check_mark: Unit testing for business logic classes
+
 #### :white_check_mark: Include two docker-compose yaml files for easy change of environment
 
 #### :white_check_mark: Hexagonal Architecture following Clean Architecture principle
@@ -94,4 +138,5 @@ Just me, [Iván](https://github.com/Ivan-Montes) :sweat_smile:
 [![Eclipse](https://badgen.net/badge/icon/eclipse?icon=eclipse&label)](https://https://eclipse.org/)
 [![SonarQube](https://badgen.net/badge/icon/sonarqube?icon=sonarqube&label&color=purple)](https://www.sonarsource.com/products/sonarqube/downloads/)
 [![Docker](https://badgen.net/badge/icon/docker?icon=docker&label)](https://www.docker.com/)
+[![Kafka](https://badgen.net/static/Apache/Kafka/cyan)](https://kafka.apache.org/)
 [![GPLv3 license](https://badgen.net/static/License/GPLv3/blue)](https://choosealicense.com/licenses/gpl-3.0/)
