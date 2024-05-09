@@ -1,3 +1,4 @@
 HMSET "dev.ime.infrastructure.entity.ArtistRedisEntity:1" "_class" "dev.ime.infrastructure.entity.ArtistRedisEntity" "id" "1"
 HMSET "dev.ime.infrastructure.entity.ArtistRedisEntity:2" "_class" "dev.ime.infrastructure.entity.ArtistRedisEntity" "id" "2"
 HMSET "dev.ime.infrastructure.entity.ArtistRedisEntity:3" "_class" "dev.ime.infrastructure.entity.ArtistRedisEntity" "id" "3"
+SADD "dev.ime.infrastructure.entity.ArtistRedisEntity" "1" "2" "3" 
