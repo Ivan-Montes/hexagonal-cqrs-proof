@@ -92,6 +92,17 @@ services:
     restart: on-failure:3
     healthcheck:
       test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]      
+           
+  redis-ms-artist:
+    build: ./databases/nosql-ms-artist
+    container_name: redis-ms-artist
+    networks:
+      - hexa-cqrs-net
+    ports:
+      - "26379:6379"
+    restart: on-failure:3
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]      
       
   kafka:
     image: bitnami/kafka
