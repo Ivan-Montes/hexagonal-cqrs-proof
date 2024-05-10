@@ -68,7 +68,6 @@
 	</build>
 	
 	<modules>
-		<module>ms-notification</module>
 		<module>ms-artist</module>
 		<module>ms-media</module>
 	</modules>
