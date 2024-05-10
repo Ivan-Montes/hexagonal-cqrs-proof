@@ -84,16 +84,5 @@ public class InfrastructureLevelExceptionHandler {
 				Map.of( ex.getLocalizedMessage(), ex.getMessage())  ),
 				HttpStatus.BAD_REQUEST );		
 	}
-	
-	@ExceptionHandler(Exception.class)		
-	public ResponseEntity<ExceptionResponse> generalException(Exception ex){
-
-		logger.severe("### [InfrastructureLevelExceptionHandler] -> [Spit "+ InfrastructureConstant.EX_EX + "]");
-		return new ResponseEntity<>( new ExceptionResponse( UUID.randomUUID(),
-				InfrastructureConstant.EX_EX,
-				InfrastructureConstant.EX_EX_DESC,
-				Map.of( ex.getLocalizedMessage(), ex.getMessage())  ),
-				HttpStatus.BAD_REQUEST );
-	}
-	
+		
 }
