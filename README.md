@@ -85,7 +85,7 @@ The dev environment is ready for using with your IDE. The microservice attempts 
 4. You could stop the project and free resources with any of these orders
 
 ```
-    **Developing mode**
+    **Developer mode**
     docker-compose -f docker-compose-dev.yml down --rmi local -v
       
     **Production mode**
