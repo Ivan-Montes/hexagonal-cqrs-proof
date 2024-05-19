@@ -1,13 +1,13 @@
 # hexagonal-cqrs-proof
 
-:warning::construction::traffic_light:Microservices in a multimodule Maven project with Hexagonal Architecture, CQRS, and Kafka for synchronizing databases :warning::construction::traffic_light:
+Microservices in a multimodule Maven project with Hexagonal Architecture, CQRS, and Kafka for synchronizing databases
 
-**Under Construction**
+**Components**
 - [Kafka](https://kafka.apache.org/) [9092] + [9093] 
 - [Kafka-UI](https://docs.kafka-ui.provectus.io/) [8080]
 - REST API ms-artist with [OpenApi Swagger](https://swagger.io/) and two separate DB for R/RW actions [8081]
 - REST API ms-media with [OpenApi Swagger](https://swagger.io/) and two separate DB for R/RW actions [8082]
-- [Redis](https://redis.io/) DB in every microservice for keeping ID references of other ones
+- [Redis](https://redis.io/) DB in every microservice work as caches to store ID references for other REST APIs
 
 ```mermaid
 graph RL
@@ -115,7 +115,7 @@ First of all, please visit the REST API documentation. Replace ${port} for the s
 
 #### :white_check_mark: DB synchronization by Publisher-Subscriber pattern
 
-#### :white_check_mark: Redis DB in every microservice for keeping ID references of other ones
+#### :white_check_mark: Redis DB in every microservice work as caches to store ID references for other REST APIs
 
 
 ## Maintainers
