@@ -73,7 +73,7 @@ end
     **Generate .jar**
     mvn clean package
     
-    **Developing mode**  
+    **Developer mode**  
     docker-compose -f docker-compose-dev.yml up -d
 
     **Production mode**
