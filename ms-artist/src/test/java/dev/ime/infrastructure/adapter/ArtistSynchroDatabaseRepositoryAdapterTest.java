@@ -6,7 +6,6 @@ import static org.mockito.Mockito.verify;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import dev.ime.application.exception.ResourceNotFoundException;
 import dev.ime.config.ArtistMapper;
 import dev.ime.domain.model.Artist;
 import dev.ime.infrastructure.entity.ArtistMongoEntity;
@@ -80,17 +78,14 @@ class ArtistSynchroDatabaseRepositoryAdapterTest {
 		verify(artistWriteMongoRepository, times(1)).findFirstByArtistId(Mockito.anyLong());
 	}
 
+
 	@Test
-	void ArtistSynchroDatabaseRepositoryAdapter_update_ReturnResourceNotFoundException() {
+	void ArtistSynchroDatabaseRepositoryAdapter_update_ReturnVoidForOptEmpty() {
 		
 		Mockito.when(artistWriteMongoRepository.findFirstByArtistId(Mockito.anyLong())).thenReturn(Optional.ofNullable(null));
 
-		Exception ex = org.junit.jupiter.api.Assertions.assertThrows(ResourceNotFoundException.class, ()-> artistSynchroDatabaseRepositoryPort.update(artistTest));
+		artistSynchroDatabaseRepositoryPort.update(artistTest);
 		
-		org.junit.jupiter.api.Assertions.assertAll(
-				()-> Assertions.assertThat(ex).isNotNull(),
-				()-> Assertions.assertThat(ex.getClass()).isEqualTo(ResourceNotFoundException.class)
-				);
 		verify(artistWriteMongoRepository, times(1)).findFirstByArtistId(Mockito.anyLong());
 	}
 
@@ -107,16 +102,12 @@ class ArtistSynchroDatabaseRepositoryAdapterTest {
 	}
 
 	@Test
-	void ArtistSynchroDatabaseRepositoryAdapter_deleteById_ReturnResourceNotFoundException() {
+	void ArtistSynchroDatabaseRepositoryAdapter_deleteById_ReturnVoidForOptEmpty() {
 		
 		Mockito.when(artistWriteMongoRepository.findFirstByArtistId(Mockito.anyLong())).thenReturn(Optional.ofNullable(null));
 		
-		Exception ex = org.junit.jupiter.api.Assertions.assertThrows(ResourceNotFoundException.class, ()-> artistSynchroDatabaseRepositoryPort.deleteById(id));
-
-		org.junit.jupiter.api.Assertions.assertAll(
-				()-> Assertions.assertThat(ex).isNotNull(),
-				()-> Assertions.assertThat(ex.getClass()).isEqualTo(ResourceNotFoundException.class)
-				);
+		artistSynchroDatabaseRepositoryPort.deleteById(id);
+		
 		verify(artistWriteMongoRepository, times(1)).findFirstByArtistId(Mockito.anyLong());
 	}
 

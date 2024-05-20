@@ -7,7 +7,6 @@ import static org.mockito.Mockito.verify;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import dev.ime.application.exception.ResourceNotFoundException;
 import dev.ime.config.MediaMapper;
 import dev.ime.domain.model.Genre;
 import dev.ime.domain.model.Media;
@@ -92,16 +90,13 @@ class MediaSynchroDatabaseRepositoryAdapterTest {
 	}
 
 	@Test
-	void MediaSynchroDatabaseRepositoryAdapter_update_ReturnResourceNotFoundException() {
+	void MediaSynchroDatabaseRepositoryAdapter_update_ReturnForVoidOptEpty() {
 
 		Mockito.when(mediaWriteMongoRepository.findFirstByMediaId(Mockito.anyLong())).thenReturn(Optional.ofNullable(null));
+
+		mediaSynchroDatabaseRepositoryPort.update(mediaTest);
 		
-		Exception ex = org.junit.jupiter.api.Assertions.assertThrows(ResourceNotFoundException.class, ()-> mediaSynchroDatabaseRepositoryPort.update(mediaTest));
-	
-		org.junit.jupiter.api.Assertions.assertAll(
-				()-> Assertions.assertThat(ex).isNotNull(),
-				()-> Assertions.assertThat(ex.getClass()).isEqualTo(ResourceNotFoundException.class)
-				);
+		verify(mediaWriteMongoRepository, times(1)).findFirstByMediaId(Mockito.anyLong());
 	}
 	
 	@Test
@@ -117,16 +112,14 @@ class MediaSynchroDatabaseRepositoryAdapterTest {
 	}	
 
 	@Test
-	void MediaSynchroDatabaseRepositoryAdapter_deleteById_ReturnResourceNotFoundException() {
+	void MediaSynchroDatabaseRepositoryAdapter_deleteById_ReturnVoidForOptEmpty() {
 
 		Mockito.when(mediaWriteMongoRepository.findFirstByMediaId(Mockito.anyLong())).thenReturn(Optional.ofNullable(null));
-		
-		Exception ex = org.junit.jupiter.api.Assertions.assertThrows(ResourceNotFoundException.class, ()-> mediaSynchroDatabaseRepositoryPort.deleteById(id));
 	
-		org.junit.jupiter.api.Assertions.assertAll(
-				()-> Assertions.assertThat(ex).isNotNull(),
-				()-> Assertions.assertThat(ex.getClass()).isEqualTo(ResourceNotFoundException.class)
-				);
+		mediaSynchroDatabaseRepositoryPort.deleteById(id);
+		
+		verify(mediaWriteMongoRepository, times(1)).findFirstByMediaId(Mockito.anyLong());
 	}	
+
 
 }
