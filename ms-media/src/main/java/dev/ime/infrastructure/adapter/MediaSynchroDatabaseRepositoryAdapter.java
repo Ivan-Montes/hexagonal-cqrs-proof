@@ -1,12 +1,12 @@
 package dev.ime.infrastructure.adapter;
 
-import java.util.Map;
+import java.util.Optional;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.stereotype.Repository;
 
 import dev.ime.application.config.ApplicationConstant;
-import dev.ime.application.exception.ResourceNotFoundException;
 import dev.ime.config.MediaMapper;
 import dev.ime.domain.model.Media;
 import dev.ime.domain.port.outbound.MediaSynchroDatabaseRepositoryPort;
@@ -38,23 +38,42 @@ public class MediaSynchroDatabaseRepositoryAdapter implements MediaSynchroDataba
 	@Override
 	public void update(Media media) {
 		
-		MediaMongoEntity mongoEntity = mediaWriteMongoRepository.findFirstByMediaId(media.getId()).orElseThrow(() -> new ResourceNotFoundException(Map.of(ApplicationConstant.MEDIAID, String.valueOf(media.getId()))));
+		Long mediaId = media.getId();
+		Optional<MediaMongoEntity> optMongoEntity = mediaWriteMongoRepository.findFirstByMediaId(mediaId);
+		
+		if ( optMongoEntity.isEmpty() ) {
+			
+			logger.log(Level.INFO, "### [MediaSynchroDatabaseRepositoryAdapter] -> [update] -> [ResourceNotFoundException] -> [ " + ApplicationConstant.MEDIAID + " : {0} ]", mediaId);
+			return;
+		}
+		
+		MediaMongoEntity mongoEntity = optMongoEntity.get();
 		mongoEntity.setName(media.getName());
 		mongoEntity.setGenre(media.getGenre().name());
 		mongoEntity.setMediaClass(media.getMediaClass().name());
 		mongoEntity.setArtistId(media.getArtistId());
 		
 		mediaWriteMongoRepository.save(mongoEntity);
-		logger.info("### [MediaSynchroDatabaseRepositoryAdapter] -> [update] -> [Media]");
+		
+		logger.log(Level.INFO, "### [MediaSynchroDatabaseRepositoryAdapter] -> [update] -> [ {0} ]", mongoEntity);
 	}
 
 	@Override
 	public void deleteById(Long id) {
 		
-		MediaMongoEntity mongoEntity = mediaWriteMongoRepository.findFirstByMediaId(id).orElseThrow(() -> new ResourceNotFoundException(Map.of(ApplicationConstant.MEDIAID,String.valueOf(id))));
-
+		Optional<MediaMongoEntity> optMongoEntity = mediaWriteMongoRepository.findFirstByMediaId(id);
+		
+		if ( optMongoEntity.isEmpty() ) {
+			
+			logger.log(Level.INFO, "### [MediaSynchroDatabaseRepositoryAdapter] -> [deleteById] -> [ResourceNotFoundException] -> [ " + ApplicationConstant.MEDIAID + " : {0} ]", id);
+			return;
+		}
+		
+		MediaMongoEntity mongoEntity = optMongoEntity.get();
+				
 		mediaWriteMongoRepository.delete(mongoEntity);
-		logger.info("### [MediaSynchroDatabaseRepositoryAdapter] -> [deleteById] -> [Media]");		
+		
+		logger.log(Level.INFO, "### [MediaSynchroDatabaseRepositoryAdapter] -> [deleteById] -> [ {0} ]", ApplicationConstant.MEDIAID + " : " + id);		
 	}
 
 }

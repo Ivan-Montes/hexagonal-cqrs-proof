@@ -1,12 +1,12 @@
 package dev.ime.infrastructure.adapter;
 
-import java.util.Map;
+import java.util.Optional;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.stereotype.Repository;
 
 import dev.ime.application.config.ApplicationConstant;
-import dev.ime.application.exception.ResourceNotFoundException;
 import dev.ime.config.ArtistMapper;
 import dev.ime.domain.model.Artist;
 import dev.ime.domain.port.outbound.ArtistSynchroDatabaseRepositoryPort;
@@ -32,27 +32,47 @@ public class ArtistSynchroDatabaseRepositoryAdapter implements ArtistSynchroData
 	public void save(Artist artist) {
 		
 		artistWriteMongoRepository.save(artistMapper.fromDomainToMongo(artist));
-		logger.info("### [ArtistSynchroDatabaseRepositoryAdapter] -> [save] -> [Artist]");
+		logger.log(Level.INFO, "### [ArtistSynchroDatabaseRepositoryAdapter] -> [save] -> [ {0} ]", artist);
 	}
 
 	@Override
 	public void update(Artist artist) {
 
-		ArtistMongoEntity mongoEntity = artistWriteMongoRepository.findFirstByArtistId(artist.getId()).orElseThrow(() -> new ResourceNotFoundException(Map.of(ApplicationConstant.ARTISTID, String.valueOf(artist.getId()))));
+		Long id = artist.getId();
+		Optional<ArtistMongoEntity> optMongoEntity = artistWriteMongoRepository.findFirstByArtistId(id);
+		
+		if ( optMongoEntity.isEmpty() ) {
+			
+			logger.log(Level.INFO, "### [ArtistSynchroDatabaseRepositoryAdapter] -> [update] -> [ResourceNotFoundException] -> [ {0} ]", artist);
+			return;
+			
+		}
+		
+		ArtistMongoEntity mongoEntity = optMongoEntity.get();
 		mongoEntity.setName(artist.getName());
 		mongoEntity.setSurname(artist.getSurname());
 		mongoEntity.setArtisticName(artist.getArtisticName());
 		
 		artistWriteMongoRepository.save(mongoEntity);
-		logger.info("### [ArtistSynchroDatabaseRepositoryAdapter] -> [update] -> [Artist]");
+		
+		logger.log(Level.INFO, "### [ArtistSynchroDatabaseRepositoryAdapter] -> [update] -> [ {0} ]", artist);
 	}
 
 	@Override
-	public void deleteById(Long id) {
-		
-		ArtistMongoEntity mongoEntity = artistWriteMongoRepository.findFirstByArtistId(id).orElseThrow(() -> new ResourceNotFoundException(Map.of(ApplicationConstant.ARTISTID,String.valueOf(id))));
+	public void deleteById(Long id) {		
 
+		Optional<ArtistMongoEntity> optMongoEntity = artistWriteMongoRepository.findFirstByArtistId(id);
+		
+		if ( optMongoEntity.isEmpty() ) {
+			
+			logger.log(Level.INFO, "### [ArtistSynchroDatabaseRepositoryAdapter] -> [deleteById] -> [ResourceNotFoundException] -> [ {0} ]", ApplicationConstant.ARTISTID + " : " +  id);
+			return;
+			
+		}
+		
+		ArtistMongoEntity mongoEntity = optMongoEntity.get();
 		artistWriteMongoRepository.delete(mongoEntity);
+		
 		logger.info("### [ArtistSynchroDatabaseRepositoryAdapter] -> [deleteById] -> [Artist]");
 	}
 
