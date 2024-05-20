@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import dev.ime.config.MediaMapper;
 import dev.ime.domain.model.Media;
 import dev.ime.domain.port.outbound.MediaPublisherPort;
-import dev.ime.infrastructure.config.InfrastructureConstant;
+import dev.ime.application.config.ApplicationConstant;
 
 @Service
 public class KafkaMediaPublisherAdapter implements MediaPublisherPort{
@@ -31,7 +31,7 @@ public class KafkaMediaPublisherAdapter implements MediaPublisherPort{
 	@Override
 	public void publishInsertEvent(Media media) {
 		
-		send(new ProducerRecord<>(InfrastructureConstant.MEDIA_CREATED, mediaMapper.fromDomainToDto(media)));
+		send(new ProducerRecord<>(ApplicationConstant.MEDIA_CREATED, mediaMapper.fromDomainToDto(media)));
 		logger.info("### [KafkaMediaPublisherAdapter] -> [publishInsertEvent]");
 
 	}
@@ -39,7 +39,7 @@ public class KafkaMediaPublisherAdapter implements MediaPublisherPort{
 	@Override
 	public void publishUpdateEvent(Media media) {
 		
-		send(new ProducerRecord<>(InfrastructureConstant.MEDIA_UPDATED, mediaMapper.fromDomainToDto(media)));
+		send(new ProducerRecord<>(ApplicationConstant.MEDIA_UPDATED, mediaMapper.fromDomainToDto(media)));
 		logger.info("### [KafkaMediaPublisherAdapter] -> [publishUpdateEvent]");
 
 	}
@@ -47,7 +47,7 @@ public class KafkaMediaPublisherAdapter implements MediaPublisherPort{
 	@Override
 	public void publishDeleteEvent(Long id) {
 		
-		send(new ProducerRecord<>(InfrastructureConstant.MEDIA_DELETED, id));		
+		send(new ProducerRecord<>(ApplicationConstant.MEDIA_DELETED, id));		
 		logger.info("### [KafkaMediaPublisherAdapter] -> [publishDeleteEvent]");
 		
 	}

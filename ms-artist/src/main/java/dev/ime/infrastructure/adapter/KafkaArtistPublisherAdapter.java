@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import dev.ime.config.ArtistMapper;
 import dev.ime.domain.model.Artist;
 import dev.ime.domain.port.outbound.ArtistPublisherPort;
-import dev.ime.infrastructure.config.InfrastructureConstant;
+import dev.ime.application.config.ApplicationConstant;
 
 @Service
 public class KafkaArtistPublisherAdapter implements ArtistPublisherPort{
@@ -31,7 +31,7 @@ public class KafkaArtistPublisherAdapter implements ArtistPublisherPort{
 	@Override
 	public void publishInsertEvent(Artist artist) {
 		
-		send(new ProducerRecord<>(InfrastructureConstant.ARTIST_CREATED, artistMapper.fromDomainToDto(artist)));
+		send(new ProducerRecord<>(ApplicationConstant.ARTIST_CREATED, artistMapper.fromDomainToDto(artist)));
 		logger.info("### [KafkaArtistPublisherAdapter] -> [publishInsertEvent]");
 
 	}
@@ -39,7 +39,7 @@ public class KafkaArtistPublisherAdapter implements ArtistPublisherPort{
 	@Override
 	public void publishUpdateEvent(Artist artist) {
 		
-		send(new ProducerRecord<>(InfrastructureConstant.ARTIST_UPDATED, artistMapper.fromDomainToDto(artist)));
+		send(new ProducerRecord<>(ApplicationConstant.ARTIST_UPDATED, artistMapper.fromDomainToDto(artist)));
 		logger.info("### [KafkaArtistPublisherAdapter] -> [publishUpdateEvent]");
 
 	}
@@ -47,7 +47,7 @@ public class KafkaArtistPublisherAdapter implements ArtistPublisherPort{
 	@Override
 	public void publishDeleteEvent(Long id) {
 		
-		send(new ProducerRecord<>(InfrastructureConstant.ARTIST_DELETED, id));		
+		send(new ProducerRecord<>(ApplicationConstant.ARTIST_DELETED, id));		
 		logger.info("### [KafkaArtistPublisherAdapter] -> [publishDeleteEvent]");
 
 	}

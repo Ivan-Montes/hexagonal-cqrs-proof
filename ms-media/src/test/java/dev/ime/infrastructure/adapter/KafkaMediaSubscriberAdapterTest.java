@@ -22,7 +22,7 @@ import dev.ime.domain.model.Media;
 import dev.ime.domain.model.MediaClass;
 import dev.ime.domain.port.outbound.ArtistBackupServicePort;
 import dev.ime.domain.port.outbound.MediaSynchroDatabaseServicePort;
-import dev.ime.infrastructure.config.InfrastructureConstant;
+import dev.ime.application.config.ApplicationConstant;
 import dev.ime.infrastructure.dto.ArtistDto;
 import dev.ime.infrastructure.dto.MediaDto;
 
@@ -89,7 +89,7 @@ class KafkaMediaSubscriberAdapterTest {
 	@Test
 	void KafkaMediaSubscriberAdapter_onMessage_ReturnVoid_BranchMediaCreated() {		
 		
-		Mockito.when(consumerRecord.topic()).thenReturn(InfrastructureConstant.MEDIA_CREATED);
+		Mockito.when(consumerRecord.topic()).thenReturn(ApplicationConstant.MEDIA_CREATED);
 		Mockito.when(consumerRecord.value()).thenReturn(mediaDtoTest);
 		Mockito.when(mediaMapper.fromDtoToDomain(Mockito.any(MediaDto.class))).thenReturn(mediaTest);
 		Mockito.doNothing().when(mediaSynchroDatabaseServicePort).syncCreate(Mockito.any(Media.class));
@@ -105,7 +105,7 @@ class KafkaMediaSubscriberAdapterTest {
 	@Test
 	void KafkaMediaSubscriberAdapter_onMessage_ReturnVoid_BranchMediaUpdated() {		
 		
-		Mockito.when(consumerRecord.topic()).thenReturn(InfrastructureConstant.MEDIA_UPDATED);
+		Mockito.when(consumerRecord.topic()).thenReturn(ApplicationConstant.MEDIA_UPDATED);
 		Mockito.when(consumerRecord.value()).thenReturn(mediaDtoTest);
 		Mockito.when(mediaMapper.fromDtoToDomain(Mockito.any(MediaDto.class))).thenReturn(mediaTest);
 		Mockito.doNothing().when(mediaSynchroDatabaseServicePort).syncUpdate(Mockito.any(Media.class));
@@ -121,7 +121,7 @@ class KafkaMediaSubscriberAdapterTest {
 	@Test
 	void KafkaMediaSubscriberAdapter_onMessage_ReturnVoid_BranchMediaDeleted() {		
 		
-		Mockito.when(consumerRecord.topic()).thenReturn(InfrastructureConstant.MEDIA_DELETED);
+		Mockito.when(consumerRecord.topic()).thenReturn(ApplicationConstant.MEDIA_DELETED);
 		Mockito.when(consumerRecord.value()).thenReturn(id);
 		Mockito.doNothing().when(mediaSynchroDatabaseServicePort).syncDelete(Mockito.anyLong());
 		
@@ -135,7 +135,7 @@ class KafkaMediaSubscriberAdapterTest {
 	@Test
 	void KafkaMediaSubscriberAdapter_onMessage_ReturnVoid_BranchArtistCreated() {
 		
-		Mockito.when(consumerRecord.topic()).thenReturn(InfrastructureConstant.ARTIST_CREATED);
+		Mockito.when(consumerRecord.topic()).thenReturn(ApplicationConstant.ARTIST_CREATED);
 		Mockito.when(consumerRecord.value()).thenReturn(artistDtoTest);
 		Mockito.when(artistMapper.fromDtoToDomain(Mockito.any(ArtistDto.class))).thenReturn(artistTest);
 		Mockito.doNothing().when(artistBackupServicePort).save(Mockito.any(Artist.class));
@@ -152,7 +152,7 @@ class KafkaMediaSubscriberAdapterTest {
 	@Test
 	void KafkaMediaSubscriberAdapter_onMessage_ReturnVoid_BranchArtistDeleted() {
 
-		Mockito.when(consumerRecord.topic()).thenReturn(InfrastructureConstant.ARTIST_DELETED);
+		Mockito.when(consumerRecord.topic()).thenReturn(ApplicationConstant.ARTIST_DELETED);
 		Mockito.when(consumerRecord.value()).thenReturn(artistId);
 		Mockito.doNothing().when(artistBackupServicePort).deleteById(Mockito.anyLong());
 		
@@ -166,7 +166,7 @@ class KafkaMediaSubscriberAdapterTest {
 	@Test
 	void KafkaMediaSubscriberAdapter_onMessage_ReturnVoid_BranchDefault() {
 		
-		Mockito.when(consumerRecord.topic()).thenReturn(InfrastructureConstant.EX_EX);
+		Mockito.when(consumerRecord.topic()).thenReturn(ApplicationConstant.EX_EX);
 
 		mediaSubscriberPort.onMessage(consumerRecord);
 		

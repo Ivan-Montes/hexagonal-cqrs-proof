@@ -22,7 +22,7 @@ import dev.ime.domain.model.Media;
 import dev.ime.domain.model.MediaClass;
 import dev.ime.domain.port.outbound.ArtistSynchroDatabaseServicePort;
 import dev.ime.domain.port.outbound.MediaBackupServicePort;
-import dev.ime.infrastructure.config.InfrastructureConstant;
+import dev.ime.application.config.ApplicationConstant;
 import dev.ime.infrastructure.dto.ArtistDto;
 import dev.ime.infrastructure.dto.MediaDto;
 
@@ -90,7 +90,7 @@ class KafkaArtistSubscriberAdapterTest {
 	@Test
 	void KafkaArtistSubscriberAdapter_onMessage_ReturnVoid_BranchArtistCreated() {
 		
-		Mockito.when(consumerRecord.topic()).thenReturn(InfrastructureConstant.ARTIST_CREATED);
+		Mockito.when(consumerRecord.topic()).thenReturn(ApplicationConstant.ARTIST_CREATED);
 		Mockito.when(consumerRecord.value()).thenReturn(artistDtoTest);
 		Mockito.when(artistMapper.fromDtoToDomain(Mockito.any(ArtistDto.class))).thenReturn(artistTest);
 		Mockito.doNothing().when(artistSynchroDatabaseServicePort).syncCreate(Mockito.any(Artist.class));
@@ -106,7 +106,7 @@ class KafkaArtistSubscriberAdapterTest {
 	@Test
 	void KafkaArtistSubscriberAdapter_onMessage_ReturnVoid_BranchArtistUpdated() {
 		
-		Mockito.when(consumerRecord.topic()).thenReturn(InfrastructureConstant.ARTIST_UPDATED);
+		Mockito.when(consumerRecord.topic()).thenReturn(ApplicationConstant.ARTIST_UPDATED);
 		Mockito.when(consumerRecord.value()).thenReturn(artistDtoTest);
 		Mockito.when(artistMapper.fromDtoToDomain(Mockito.any(ArtistDto.class))).thenReturn(artistTest);
 		Mockito.doNothing().when(artistSynchroDatabaseServicePort).syncUpdate(Mockito.any(Artist.class));
@@ -122,7 +122,7 @@ class KafkaArtistSubscriberAdapterTest {
 	@Test
 	void KafkaArtistSubscriberAdapter_onMessage_ReturnVoid_BranchArtistDeleted() {
 		
-		Mockito.when(consumerRecord.topic()).thenReturn(InfrastructureConstant.ARTIST_DELETED);
+		Mockito.when(consumerRecord.topic()).thenReturn(ApplicationConstant.ARTIST_DELETED);
 		Mockito.when(consumerRecord.value()).thenReturn(id);
 		Mockito.doNothing().when(artistSynchroDatabaseServicePort).syncDelete(Mockito.anyLong());
 		
@@ -136,7 +136,7 @@ class KafkaArtistSubscriberAdapterTest {
 	@Test
 	void KafkaArtistSubscriberAdapter_onMessage_ReturnVoid_BranchMediaCreated() {
 		
-		Mockito.when(consumerRecord.topic()).thenReturn(InfrastructureConstant.MEDIA_CREATED);
+		Mockito.when(consumerRecord.topic()).thenReturn(ApplicationConstant.MEDIA_CREATED);
 		Mockito.when(consumerRecord.value()).thenReturn(mediaDtoTest);
 		Mockito.when(mediaMapper.fromDtoToDomain(Mockito.any(MediaDto.class))).thenReturn(mediaTest);
 		Mockito.doNothing().when(mediaBackupServicePort).save(Mockito.any(Media.class));
@@ -152,7 +152,7 @@ class KafkaArtistSubscriberAdapterTest {
 	@Test
 	void KafkaArtistSubscriberAdapter_onMessage_ReturnVoid_BranchMediaUpdated() {
 		
-		Mockito.when(consumerRecord.topic()).thenReturn(InfrastructureConstant.MEDIA_UPDATED);
+		Mockito.when(consumerRecord.topic()).thenReturn(ApplicationConstant.MEDIA_UPDATED);
 		Mockito.when(consumerRecord.value()).thenReturn(mediaDtoTest);
 		Mockito.when(mediaMapper.fromDtoToDomain(Mockito.any(MediaDto.class))).thenReturn(mediaTest);
 		Mockito.doNothing().when(mediaBackupServicePort).save(Mockito.any(Media.class));
@@ -168,7 +168,7 @@ class KafkaArtistSubscriberAdapterTest {
 	@Test
 	void KafkaArtistSubscriberAdapter_onMessage_ReturnVoid_BranchMediaDeleted() {
 		
-		Mockito.when(consumerRecord.topic()).thenReturn(InfrastructureConstant.MEDIA_DELETED);
+		Mockito.when(consumerRecord.topic()).thenReturn(ApplicationConstant.MEDIA_DELETED);
 		Mockito.when(consumerRecord.value()).thenReturn(id);
 		Mockito.doNothing().when(mediaBackupServicePort).deleteById(Mockito.anyLong());
 		
@@ -182,7 +182,7 @@ class KafkaArtistSubscriberAdapterTest {
 	@Test
 	void KafkaMediaSubscriberAdapter_onMessage_ReturnVoid_BranchDefault() {
 		
-		Mockito.when(consumerRecord.topic()).thenReturn(InfrastructureConstant.EX_EX);
+		Mockito.when(consumerRecord.topic()).thenReturn(ApplicationConstant.EX_EX);
 
 		artistSubscriberPort.onMessage(consumerRecord);
 		

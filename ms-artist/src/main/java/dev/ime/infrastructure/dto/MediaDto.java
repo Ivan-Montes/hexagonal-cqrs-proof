@@ -1,6 +1,6 @@
 package dev.ime.infrastructure.dto;
 
-import dev.ime.infrastructure.config.InfrastructureConstant;
+import dev.ime.application.config.ApplicationConstant;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -14,6 +14,6 @@ public record MediaDto(
 		) {
 
 	public MediaDto() {
-		this(0L, InfrastructureConstant.NODATA, "", "", 0L);
+		this(0L, ApplicationConstant.NODATA, "", "", 0L);
 	}
 }

@@ -11,7 +11,7 @@ import dev.ime.config.MediaMapper;
 import dev.ime.domain.port.inbound.ArtistSubscriberPort;
 import dev.ime.domain.port.outbound.ArtistSynchroDatabaseServicePort;
 import dev.ime.domain.port.outbound.MediaBackupServicePort;
-import dev.ime.infrastructure.config.InfrastructureConstant;
+import dev.ime.application.config.ApplicationConstant;
 import dev.ime.infrastructure.dto.ArtistDto;
 import dev.ime.infrastructure.dto.MediaDto;
 
@@ -36,8 +36,8 @@ public class KafkaArtistSubscriberAdapter implements ArtistSubscriberPort{
 	}
 
 	@Override
-	@KafkaListener(topics = {InfrastructureConstant.ARTIST_CREATED, InfrastructureConstant.ARTIST_UPDATED, InfrastructureConstant.ARTIST_DELETED,
-			InfrastructureConstant.MEDIA_CREATED, InfrastructureConstant.MEDIA_UPDATED, InfrastructureConstant.MEDIA_DELETED},
+	@KafkaListener(topics = {ApplicationConstant.ARTIST_CREATED, ApplicationConstant.ARTIST_UPDATED, ApplicationConstant.ARTIST_DELETED,
+			ApplicationConstant.MEDIA_CREATED, ApplicationConstant.MEDIA_UPDATED, ApplicationConstant.MEDIA_DELETED},
 					groupId = "artist-consumer-01")
 	public void onMessage(ConsumerRecord<String, Object> consumerRecord) {	
 		
@@ -45,12 +45,12 @@ public class KafkaArtistSubscriberAdapter implements ArtistSubscriberPort{
 		
 	    switch (consumerRecord.topic()) {
 	    
-		    case InfrastructureConstant.ARTIST_CREATED -> artistSynchroDatabaseServicePort.syncCreate(artistMapper.fromDtoToDomain( (ArtistDto)consumerRecord.value() ));
-		    case InfrastructureConstant.ARTIST_UPDATED -> artistSynchroDatabaseServicePort.syncUpdate(artistMapper.fromDtoToDomain( (ArtistDto)consumerRecord.value() ));
-		    case InfrastructureConstant.ARTIST_DELETED -> artistSynchroDatabaseServicePort.syncDelete( (long)consumerRecord.value() );
-		    case InfrastructureConstant.MEDIA_CREATED -> mediaBackupServicePort.save(mediaMapper.fromDtoToDomain( (MediaDto)consumerRecord.value() ));
-		    case InfrastructureConstant.MEDIA_UPDATED -> mediaBackupServicePort.save(mediaMapper.fromDtoToDomain( (MediaDto)consumerRecord.value() ));
-		    case InfrastructureConstant.MEDIA_DELETED -> mediaBackupServicePort.deleteById( (long)consumerRecord.value() );
+		    case ApplicationConstant.ARTIST_CREATED -> artistSynchroDatabaseServicePort.syncCreate(artistMapper.fromDtoToDomain( (ArtistDto)consumerRecord.value() ));
+		    case ApplicationConstant.ARTIST_UPDATED -> artistSynchroDatabaseServicePort.syncUpdate(artistMapper.fromDtoToDomain( (ArtistDto)consumerRecord.value() ));
+		    case ApplicationConstant.ARTIST_DELETED -> artistSynchroDatabaseServicePort.syncDelete( (long)consumerRecord.value() );
+		    case ApplicationConstant.MEDIA_CREATED -> mediaBackupServicePort.save(mediaMapper.fromDtoToDomain( (MediaDto)consumerRecord.value() ));
+		    case ApplicationConstant.MEDIA_UPDATED -> mediaBackupServicePort.save(mediaMapper.fromDtoToDomain( (MediaDto)consumerRecord.value() ));
+		    case ApplicationConstant.MEDIA_DELETED -> mediaBackupServicePort.deleteById( (long)consumerRecord.value() );
 		    default -> logger.warning("### [KafkaArtistSubscriberAdapter] -> [onMessage] -> [Switch] -> [Default] ###");
 	   
 	    }
