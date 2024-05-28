@@ -1,6 +1,7 @@
 package dev.ime.infrastructure.adapter;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -32,7 +33,7 @@ public class KafkaMediaPublisherAdapter implements MediaPublisherPort{
 	public void publishInsertEvent(Media media) {
 		
 		send(new ProducerRecord<>(ApplicationConstant.MEDIA_CREATED, mediaMapper.fromDomainToDto(media)));
-		logger.info("### [KafkaMediaPublisherAdapter] -> [publishInsertEvent]");
+		logInfoAction("publishInsertEvent", media.toString());
 
 	}
 
@@ -40,7 +41,7 @@ public class KafkaMediaPublisherAdapter implements MediaPublisherPort{
 	public void publishUpdateEvent(Media media) {
 		
 		send(new ProducerRecord<>(ApplicationConstant.MEDIA_UPDATED, mediaMapper.fromDomainToDto(media)));
-		logger.info("### [KafkaMediaPublisherAdapter] -> [publishUpdateEvent]");
+		logInfoAction("publishUpdateEvent", media.toString());
 
 	}
 
@@ -48,7 +49,7 @@ public class KafkaMediaPublisherAdapter implements MediaPublisherPort{
 	public void publishDeleteEvent(Long id) {
 		
 		send(new ProducerRecord<>(ApplicationConstant.MEDIA_DELETED, id));		
-		logger.info("### [KafkaMediaPublisherAdapter] -> [publishDeleteEvent]");
+		logInfoAction("publishDeleteEvent", id.toString() );
 		
 	}
 
@@ -65,12 +66,21 @@ public class KafkaMediaPublisherAdapter implements MediaPublisherPort{
 		});	
 	}
 
+
 	private void handleSuccess(SendResult<String, Object> result) {
-		logger.info("### [KafkaMediaPublisherAdapter] -> [send] -> [handleSuccess] -> [" + result.getProducerRecord().topic() + "]:[" + result.getProducerRecord().value() + "]");
+		logInfoAction("handleSuccess", result.getProducerRecord().topic() + "]:[" + result.getProducerRecord().value() + "] ###");
 	}
 
     private void handleFailure(SendResult<String, Object> result, Throwable ex) {
-		logger.info("### [KafkaMediaPublisherAdapter] -> [send] -> [handleFailure] -> [" + result.getProducerRecord().topic() + "]:[" + result.getProducerRecord().value() + "]:[" + ex.getMessage() + "]");
+    	logInfoAction("handleFailure", result.getProducerRecord().topic() + "]:[" + result.getProducerRecord().value() + "]:[" + ex.getMessage() + "] ###");
     }	
+
+	private void logInfoAction(String methodName, String msg) {
+		
+		String logMessage = String.format("### [%s] -> [%s] -> [ %s ]", this.getClass().getSimpleName(), methodName, msg);
+		
+		logger.log(Level.INFO, logMessage);
+		
+	}
 
 }
