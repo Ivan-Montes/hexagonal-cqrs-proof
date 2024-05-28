@@ -31,8 +31,8 @@ public class ArtistSynchroDatabaseRepositoryAdapter implements ArtistSynchroData
 	@Override
 	public void save(Artist artist) {
 		
-		artistWriteMongoRepository.save(artistMapper.fromDomainToMongo(artist));
-		logger.log(Level.INFO, "### [ArtistSynchroDatabaseRepositoryAdapter] -> [save] -> [ {0} ]", artist);
+		artistWriteMongoRepository.save(artistMapper.fromDomainToMongo(artist));		
+		logInfoAction("save", artist.toString());
 	}
 
 	@Override
@@ -43,19 +43,23 @@ public class ArtistSynchroDatabaseRepositoryAdapter implements ArtistSynchroData
 		
 		if ( optMongoEntity.isEmpty() ) {
 			
-			logger.log(Level.INFO, "### [ArtistSynchroDatabaseRepositoryAdapter] -> [update] -> [ResourceNotFoundException] -> [ {0} ]", artist);
+			logInfoAction("update] -> [ResourceNotFoundException", ApplicationConstant.ARTISTID + " : " +  id);
 			return;
 			
 		}
 		
 		ArtistMongoEntity mongoEntity = optMongoEntity.get();
-		mongoEntity.setName(artist.getName());
-		mongoEntity.setSurname(artist.getSurname());
-		mongoEntity.setArtisticName(artist.getArtisticName());
+		buildMongoEntity(artist, mongoEntity);
 		
 		artistWriteMongoRepository.save(mongoEntity);
 		
-		logger.log(Level.INFO, "### [ArtistSynchroDatabaseRepositoryAdapter] -> [update] -> [ {0} ]", artist);
+		logInfoAction("update", artist.toString());
+	}
+
+	private void buildMongoEntity(Artist artist, ArtistMongoEntity mongoEntity) {
+		mongoEntity.setName(artist.getName());
+		mongoEntity.setSurname(artist.getSurname());
+		mongoEntity.setArtisticName(artist.getArtisticName());
 	}
 
 	@Override
@@ -65,7 +69,7 @@ public class ArtistSynchroDatabaseRepositoryAdapter implements ArtistSynchroData
 		
 		if ( optMongoEntity.isEmpty() ) {
 			
-			logger.log(Level.INFO, "### [ArtistSynchroDatabaseRepositoryAdapter] -> [deleteById] -> [ResourceNotFoundException] -> [ {0} ]", ApplicationConstant.ARTISTID + " : " +  id);
+			logInfoAction("deleteById] -> [ResourceNotFoundException", ApplicationConstant.ARTISTID + " : " +  id);
 			return;
 			
 		}
@@ -73,7 +77,15 @@ public class ArtistSynchroDatabaseRepositoryAdapter implements ArtistSynchroData
 		ArtistMongoEntity mongoEntity = optMongoEntity.get();
 		artistWriteMongoRepository.delete(mongoEntity);
 		
-		logger.info("### [ArtistSynchroDatabaseRepositoryAdapter] -> [deleteById] -> [Artist]");
+		logInfoAction("deleteById", ApplicationConstant.ARTISTID + " : " +  id);
 	}
 
+	private void logInfoAction(String methodName, String msg) {
+		
+		String logMessage = String.format("### [%s] -> [%s] -> [ %s ]", this.getClass().getSimpleName(), methodName, msg);
+		
+		logger.log(Level.INFO, logMessage);
+		
+	}
+		
 }
