@@ -2,6 +2,7 @@ package dev.ime.application.error;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class ApplicationLevelExceptionHandler {
 		})
 	public ResponseEntity<ExceptionResponse> basicException(BasicException ex){
 	
-		logger.severe("### [ApplicationLevelExceptionHandler] -> [Threw " + ex.getName() + " :=: Impl of Basic Exception Class" + "] ###");
+		logSevereAction(ex.getName() + " :=: Impl of Basic Exception Class");
 		return new ResponseEntity<>( new ExceptionResponse( ex.getIdentifier(),ex.getName(),ex.getDescription(),ex.getErrors() ),
 									HttpStatus.NOT_FOUND );
 	}
@@ -39,12 +40,20 @@ public class ApplicationLevelExceptionHandler {
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<ExceptionResponse> illegalArgumentException(IllegalArgumentException ex){
 		
-		logger.severe("### [ApplicationLevelExceptionHandler] -> [Launch " + ApplicationConstant.EX_ILLEGAL_ARGUMENT + "] ###");
+		logSevereAction(ApplicationConstant.EX_ILLEGAL_ARGUMENT);
 		return new ResponseEntity<>( new ExceptionResponse( UUID.randomUUID(),
 				ApplicationConstant.EX_ILLEGAL_ARGUMENT,
 				ApplicationConstant.EX_ILLEGAL_ARGUMENT_DES,
 				Map.of( ex.getLocalizedMessage(), ex.getMessage()) ),
 				HttpStatus.BAD_REQUEST );
 	}
+
+	private void logSevereAction(String msg) {
+		
+		String logMessage = String.format("### [%s] -> [%s] ###", this.getClass().getSimpleName(), msg);
+		
+		logger.log(Level.SEVERE, logMessage);
+		
+	} 
 	
 }
