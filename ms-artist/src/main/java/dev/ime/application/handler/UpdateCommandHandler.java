@@ -28,14 +28,9 @@ public class UpdateCommandHandler implements CommandHandler<Optional<Artist>>{
 		
 		if (command instanceof UpdateCommand updateCommand) {
 			
-			Artist artist = updateCommand.artist();
-			Long id = updateCommand.id();
+			Artist artistFound = validateArtistExists( updateCommand.id() );
 			
-			Artist artistFound = artistWriteRepositoryPort.findById(id).orElseThrow( () -> new ResourceNotFoundException(Map.of(ApplicationConstant.ARTISTID,String.valueOf(id))));
-			
-			artistFound.setName(artist.getName());
-			artistFound.setSurname(artist.getSurname());
-			artistFound.setArtisticName(artist.getArtisticName());
+			updateArtistDetails(artistFound, updateCommand.artist());
 			
 			return artistWriteRepositoryPort.save(artistFound);
 			
@@ -45,5 +40,24 @@ public class UpdateCommandHandler implements CommandHandler<Optional<Artist>>{
 			
 		}	
 	}
+	
+	private Artist validateArtistExists(Long id) {
+		
+		Optional<Artist> optArtist = artistWriteRepositoryPort.findById(id);
+		
+		if ( optArtist.isEmpty() ) {
+			 
+			throw new ResourceNotFoundException(Map.of(ApplicationConstant.ARTISTID,String.valueOf(id)));
+		}
+		
+		return optArtist.get();
+	}
 
+    private void updateArtistDetails(Artist artistFound, Artist artist) {
+    	
+        artistFound.setName(artist.getName());
+        artistFound.setSurname(artist.getSurname());
+        artistFound.setArtisticName(artist.getArtisticName());
+        
+    }
 }
