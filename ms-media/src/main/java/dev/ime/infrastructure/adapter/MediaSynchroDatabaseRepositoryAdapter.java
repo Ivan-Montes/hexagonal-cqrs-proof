@@ -32,7 +32,7 @@ public class MediaSynchroDatabaseRepositoryAdapter implements MediaSynchroDataba
 	public void save(Media media) {
 		
 		mediaWriteMongoRepository.save(mediaMapper.fromDomainToMongo(media));
-		logger.info("### [MediaSynchroDatabaseRepositoryAdapter] -> [save] -> [Media]");
+		logInfoAction("save", media.toString());
 	}
 
 	@Override
@@ -43,19 +43,23 @@ public class MediaSynchroDatabaseRepositoryAdapter implements MediaSynchroDataba
 		
 		if ( optMongoEntity.isEmpty() ) {
 			
-			logger.log(Level.INFO, "### [MediaSynchroDatabaseRepositoryAdapter] -> [update] -> [ResourceNotFoundException] -> [ " + ApplicationConstant.MEDIAID + " : {0} ]", mediaId);
+			logInfoAction("update] -> [ResourceNotFoundException", ApplicationConstant.MEDIAID + " : "+ mediaId);
 			return;
 		}
 		
 		MediaMongoEntity mongoEntity = optMongoEntity.get();
+		buildMongoEntity(media, mongoEntity);
+		
+		mediaWriteMongoRepository.save(mongoEntity);
+		
+		logInfoAction("update", mongoEntity.toString());
+	}
+
+	private void buildMongoEntity(Media media, MediaMongoEntity mongoEntity) {
 		mongoEntity.setName(media.getName());
 		mongoEntity.setGenre(media.getGenre().name());
 		mongoEntity.setMediaClass(media.getMediaClass().name());
 		mongoEntity.setArtistId(media.getArtistId());
-		
-		mediaWriteMongoRepository.save(mongoEntity);
-		
-		logger.log(Level.INFO, "### [MediaSynchroDatabaseRepositoryAdapter] -> [update] -> [ {0} ]", mongoEntity);
 	}
 
 	@Override
@@ -65,7 +69,7 @@ public class MediaSynchroDatabaseRepositoryAdapter implements MediaSynchroDataba
 		
 		if ( optMongoEntity.isEmpty() ) {
 			
-			logger.log(Level.INFO, "### [MediaSynchroDatabaseRepositoryAdapter] -> [deleteById] -> [ResourceNotFoundException] -> [ " + ApplicationConstant.MEDIAID + " : {0} ]", id);
+			logInfoAction("deleteById] -> [ResourceNotFoundException", ApplicationConstant.MEDIAID + " : "+ id);
 			return;
 		}
 		
@@ -73,7 +77,15 @@ public class MediaSynchroDatabaseRepositoryAdapter implements MediaSynchroDataba
 				
 		mediaWriteMongoRepository.delete(mongoEntity);
 		
-		logger.log(Level.INFO, "### [MediaSynchroDatabaseRepositoryAdapter] -> [deleteById] -> [ {0} ]", ApplicationConstant.MEDIAID + " : " + id);		
+		logInfoAction("deleteById", ApplicationConstant.MEDIAID + " : " + id);		
 	}
 
+	private void logInfoAction(String methodName, String msg) {
+		
+		String logMessage = String.format("### [%s] -> [%s] -> [ %s ]", this.getClass().getSimpleName(), methodName, msg);
+		
+		logger.log(Level.INFO, logMessage);
+		
+	}
+		
 }
