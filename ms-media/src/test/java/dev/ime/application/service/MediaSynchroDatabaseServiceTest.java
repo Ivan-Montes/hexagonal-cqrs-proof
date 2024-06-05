@@ -35,7 +35,7 @@ class MediaSynchroDatabaseServiceTest {
 	
 	@BeforeEach
 	private void createObjects() {
-
+	
 		mediaTest = new Media.MediaBuilder()
 				.setId(id)
 				.setName(name)
