@@ -33,15 +33,11 @@ public class UpdateCommandHandler implements CommandHandler<Optional<Media>>{
 		if ( command instanceof UpdateCommand updateCommand) {
 			
 			Media media = updateCommand.media();
-			Long id = updateCommand.id();
 			
-			Media mediaFound = mediaWriteRepositoryPort.findById(id).orElseThrow( () -> new ResourceNotFoundException(Map.of(ApplicationConstant.MEDIAID, String.valueOf(id))));
-			if ( !artistBackupRepositoryPort.existById(media.getArtistId()) ) throw new ResourceNotFoundException(Map.of(ApplicationConstant.ARTISTID, String.valueOf(media.getArtistId())));
+			Media mediaFound = validateMediaExists( updateCommand.id() );
+			validateArtistExists(media.getArtistId());
 
-			mediaFound.setName(media.getName());
-			mediaFound.setGenre(media.getGenre());
-			mediaFound.setMediaClass(media.getMediaClass());
-			mediaFound.setArtistId(media.getArtistId());
+			updateMediaDetails(media, mediaFound);
 			
 			return mediaWriteRepositoryPort.save(mediaFound);
 			
@@ -51,4 +47,34 @@ public class UpdateCommandHandler implements CommandHandler<Optional<Media>>{
 			
 		}
 	}
+	
+	private void validateArtistExists(Long artistId) {
+		
+	    if (!artistBackupRepositoryPort.existById(artistId)) {
+	    	
+	        throw new ResourceNotFoundException(Map.of(ApplicationConstant.ARTISTID, String.valueOf(artistId)));	        
+	    }
+	}
+	
+	private void updateMediaDetails(Media media, Media mediaFound) {
+		
+		mediaFound.setName(media.getName());
+		mediaFound.setGenre(media.getGenre());
+		mediaFound.setMediaClass(media.getMediaClass());
+		mediaFound.setArtistId(media.getArtistId());
+		
+	}
+	
+	private Media validateMediaExists(Long id) {
+		
+		Optional<Media> optMedia = mediaWriteRepositoryPort.findById(id);
+		
+		if ( optMedia.isEmpty() ) {
+
+			throw new ResourceNotFoundException(Map.of(ApplicationConstant.MEDIAID,String.valueOf(id)));
+		}
+		
+		return optMedia.get();
+	}
+
 }
