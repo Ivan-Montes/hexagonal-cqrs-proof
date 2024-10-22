@@ -1,6 +1,6 @@
 # hexagonal-cqrs-proof
 
-Microservices in a multimodule Maven project with Hexagonal Architecture, CQRS, and Kafka for synchronizing databases
+Multimodule Maven project with Hexagonal Architecture, CQRS, and Kafka for synchronizing databases
 
 **Components**
 - [Kafka](https://kafka.apache.org/) [9092] + [9093] 
